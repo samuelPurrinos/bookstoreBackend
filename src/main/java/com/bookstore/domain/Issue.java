@@ -1,15 +1,16 @@
 package com.bookstore.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
+import java.util.*;
 
 @Entity
 @Table(name = "issues")
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Issue {
@@ -19,16 +20,20 @@ public class Issue {
     private Long id;
 
     @Column(name = "isbn", length = 30, nullable = false)
+    @NotBlank
     private String isbn;
 
     @Column(name = "author", length = 30, nullable = false)
+    @NotBlank
     private String author;
 
     @Column(name = "price", precision = 10, nullable = false)
+    @Positive
+    @NotBlank
     private Double price;
 
     @Column(name = "order_date", nullable = false)
-    private LocalDate orderDate;
+    private Date orderDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "series_id", nullable = false)
@@ -38,9 +43,11 @@ public class Issue {
     private byte[] cover;
 
     @Column(name = "release_date", nullable = false)
-    private LocalDate releaseDate;
+    private Date releaseDate;
 
     @Column(name = "volume", nullable = false)
+    @Positive
+    @NotBlank
     private Integer volume;
 
     @Enumerated(EnumType.STRING)
@@ -49,79 +56,4 @@ public class Issue {
 
     public enum State { bad, broken, good, excellent}
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getAutor() {
-        return author;
-    }
-
-    public void setAutor(String autor) {
-        this.author = autor;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrecio(Double price) {
-        this.price = price;
-    }
-
-    public LocalDate getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(LocalDate orderDate) {
-        this.orderDate = orderDate;
-    }
-
-    public Serie getSerie() {
-        return series;
-    }
-
-    public void setSerie(Serie serie) {
-        this.series = serie;
-    }
-
-    public byte[] getCover() {
-        return cover;
-    }
-
-    public void setCover(byte[] cover) {
-        this.cover = cover;
-    }
-
-    public LocalDate getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(LocalDate releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
-    public Integer getVolume() {
-        return volume;
-    }
-
-    public void setVolume(Integer volume) {
-        this.volume = volume;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State estado) {
-        this.state = estado;
-    }
-
-    public String getIsbn() {return isbn;}
-
-    public void setIsbn(String isbn) {this.isbn = isbn;}
 }
