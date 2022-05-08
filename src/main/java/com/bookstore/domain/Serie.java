@@ -3,7 +3,6 @@ package com.bookstore.domain;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.util.*;
 
 @Entity
@@ -11,6 +10,8 @@ import java.util.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Serie {
 
     public Serie(Long id,String title, String publisher) {
@@ -25,11 +26,11 @@ public class Serie {
     private Long id;
 
     @Column(name = "title", length = 30, nullable = false)
-    @NotBlank
+    @NonNull
     private String title;
 
     @Column(name = "publisher", length = 20, nullable = false)
-    @NotBlank
+    @NonNull
     private String publisher;
 
     @OneToMany(mappedBy = "series",orphanRemoval = true)

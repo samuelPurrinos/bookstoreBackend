@@ -3,8 +3,7 @@ package com.bookstore.domain;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 import java.util.*;
 
 @Entity
@@ -13,6 +12,7 @@ import java.util.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Issue {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +20,7 @@ public class Issue {
     private Long id;
 
     @Column(name = "isbn", length = 30, nullable = false)
-    @NotBlank
+    @NonNull
     private String isbn;
 
     @Column(name = "author", length = 30, nullable = false)
@@ -29,7 +29,7 @@ public class Issue {
 
     @Column(name = "price", precision = 10, nullable = false)
     @Positive
-    @NotBlank
+    @NonNull
     private Double price;
 
     @Column(name = "order_date", nullable = false)
@@ -43,11 +43,12 @@ public class Issue {
     private byte[] cover;
 
     @Column(name = "release_date", nullable = false)
+    @NonNull
     private Date releaseDate;
 
     @Column(name = "volume", nullable = false)
     @Positive
-    @NotBlank
+    @NonNull
     private Integer volume;
 
     @Enumerated(EnumType.STRING)
