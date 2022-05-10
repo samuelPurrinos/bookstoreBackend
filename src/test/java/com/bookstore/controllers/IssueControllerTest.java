@@ -13,9 +13,10 @@ import org.springframework.http.*;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.*;
 import java.util.*;
-import static org.assertj.core.api.BDDAssertions.then;;
+import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @WebMvcTest(IssueController.class)
@@ -24,6 +25,8 @@ public class IssueControllerTest {
 
     @MockBean
     private SaveBooksService saveBooksService;
+    @MockBean
+    private IssuesService issuesService;
     @MockBean
     private IssueRepository issueRepository;
     @Autowired
@@ -70,10 +73,31 @@ public class IssueControllerTest {
                 .andReturn().getResponse();
 
         // then
-        then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        then(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
         then(response.getContentAsString()).isEqualTo(
                 jsonResultIssue.write(
                         record1
+                ).getJson());
+
+    }
+
+    @Test
+    public void getAllSeries() throws Exception {
+
+        //given
+        given(issuesService.findAll())
+                .willReturn(List.of(record1,record2,record3));
+
+        // when
+        MockHttpServletResponse response = mvc.perform(
+                        get("/issues").contentType(MediaType.APPLICATION_JSON))
+                .andReturn()
+                .getResponse();
+
+        // then
+        then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        then(response.getContentAsString()).isEqualTo(
+                jsonResultIssueList.write(List.of(record1,record2,record3)
                 ).getJson());
 
     }

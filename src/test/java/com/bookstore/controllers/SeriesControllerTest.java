@@ -14,10 +14,13 @@ import org.springframework.http.*;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.*;
+
+import java.io.IOException;
 import java.util.*;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @ExtendWith(SpringExtension.class)
@@ -27,6 +30,8 @@ public class SeriesControllerTest {
 
     @MockBean
     private SaveBooksService saveBooksService;
+    @MockBean
+    SeriesService seriesService;
     @MockBean
     private SerieRepository serieRepository;
     @Autowired
@@ -45,12 +50,12 @@ public class SeriesControllerTest {
         issue1 =Issue.builder().id(1L)
                 .isbn("9781846539411").author("Stan Lee").price(200.0).orderDate(new Date()).cover(new byte[1])
                 .releaseDate(new Date()).volume(1).state(Issue.State.excellent).build();
-        record1 = Serie.builder().id(3l).title("Spiderman").publisher("Marvel").issues(List.of(issue1)).build();
+        record1 = Serie.builder().id(3L).title("Spiderman").publisher("Marvel").issues(List.of(issue1)).build();
 
         issue2 =Issue.builder().id(2L)
                 .isbn("978-1563890505").author("Bob Kane").price(170.0).orderDate(new Date()).cover(new byte[1])
                 .releaseDate(new Date()).volume(1).state(Issue.State.good).build();
-        record2 = Serie.builder().id(3l).title("Batman").publisher("DC Comics").issues(List.of(issue2)).build();
+        record2 = Serie.builder().id(3L).title("Batman").publisher("DC Comics").issues(List.of(issue2)).build();
 
         issue3 =Issue.builder().id(3L)
                 .isbn("9788467483086").author("Akira Toriyama").price(280.0).orderDate(new Date()).cover(new byte[1])
@@ -73,11 +78,31 @@ public class SeriesControllerTest {
                 .andReturn().getResponse();
 
         // then
-        then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        then(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
         then(response.getContentAsString()).isEqualTo(
                 jsonResultSerie.write(
                         record1
                 ).getJson());
     }
 
+    @Test
+    public void getAllSeries() throws Exception {
+
+        //given
+        given(seriesService.findAll())
+                .willReturn(List.of(record1,record2,record3));
+
+        // when
+        MockHttpServletResponse response = mvc.perform(
+                        get("/series").contentType(MediaType.APPLICATION_JSON))
+                .andReturn()
+                .getResponse();
+
+        // then
+        then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        then(response.getContentAsString()).isEqualTo(
+                jsonResultSerieList.write(List.of(record1,record2,record3)
+                ).getJson());
+
+    }
 }
