@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 @Service
 @RequiredArgsConstructor
-public class IssuesServiceImpl implements IssuesService{
+public class IssueServiceImpl implements IssueService {
 
     private final IssueRepository issueRepository;
 

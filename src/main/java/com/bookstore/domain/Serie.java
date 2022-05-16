@@ -3,6 +3,7 @@ package com.bookstore.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.*;
 
 @Entity
@@ -26,11 +27,11 @@ public class Serie {
     private Long id;
 
     @Column(name = "title", length = 30, nullable = false)
-    @NonNull
+    @NotBlank(message = "Title is mandatory")
     private String title;
 
     @Column(name = "publisher", length = 20, nullable = false)
-    @NonNull
+    @NotBlank(message = "Publisher is mandatory")
     private String publisher;
 
     @OneToMany(mappedBy = "series",orphanRemoval = true)

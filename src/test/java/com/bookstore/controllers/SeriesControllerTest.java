@@ -3,6 +3,7 @@ package com.bookstore.controllers;
 import com.bookstore.domain.*;
 import com.bookstore.repositories.*;
 import com.bookstore.services.*;
+import org.hamcrest.core.Is;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,9 @@ import org.springframework.http.*;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.*;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.io.IOException;
 import java.util.*;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,7 +33,7 @@ public class SeriesControllerTest {
     @MockBean
     private SaveBooksService saveBooksService;
     @MockBean
-    SeriesService seriesService;
+    SerieService serieService;
     @MockBean
     private SerieRepository serieRepository;
     @Autowired
@@ -86,10 +88,27 @@ public class SeriesControllerTest {
     }
 
     @Test
+    public void postInvalidSerie() throws Exception {
+        //given
+        Serie invalidSerie = new Serie();
+
+        //when
+        MockHttpServletResponse response = mvc.perform(
+                        post("/series/save").contentType(MediaType.APPLICATION_JSON)
+                                .content(jsonRequestSerie.write(invalidSerie).getJson()))
+                .andReturn().getResponse();
+
+        // then
+        then(response.getStatus()).isEqualTo(400);
+        then(MockMvcResultMatchers.jsonPath("$.title", Is.is("Title is mandatory")));
+        then(MockMvcResultMatchers.jsonPath("$.publisher", Is.is("Publisher is mandatory")));
+
+    }
+    @Test
     public void getAllSeries() throws Exception {
 
         //given
-        given(seriesService.findAll())
+        given(serieService.findAll())
                 .willReturn(List.of(record1,record2,record3));
 
         // when

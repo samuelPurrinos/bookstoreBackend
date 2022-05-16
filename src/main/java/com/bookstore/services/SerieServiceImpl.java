@@ -7,11 +7,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class SeriesServiceImpl implements SeriesService{
+public class SerieServiceImpl implements SerieService {
     private final SerieRepository serieRepository;
     @Override
     public Optional<Serie> findSerieById(Long id) {

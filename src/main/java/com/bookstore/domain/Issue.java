@@ -20,16 +20,16 @@ public class Issue {
     private Long id;
 
     @Column(name = "isbn", length = 30, nullable = false)
-    @NonNull
+    @NotBlank(message = "isbn is mandatory")
     private String isbn;
 
     @Column(name = "author", length = 30, nullable = false)
-    @NotBlank
+    @NotBlank(message = "author is mandatory")
     private String author;
 
     @Column(name = "price", precision = 10, nullable = false)
-    @Positive
-    @NonNull
+    @Positive(message = "Price must be a positive number")
+    @NotNull(message = "Price is mandatory")
     private Double price;
 
     @Column(name = "order_date", nullable = false)
@@ -43,12 +43,12 @@ public class Issue {
     private byte[] cover;
 
     @Column(name = "release_date", nullable = false)
-    @NonNull
+    @NotNull(message = "Release date is mandatory")
     private Date releaseDate;
 
     @Column(name = "volume", nullable = false)
-    @Positive
-    @NonNull
+    @Positive(message = "Volume must be a positive number")
+    @NotNull(message = "Volume is mandatory")
     private Integer volume;
 
     @Enumerated(EnumType.STRING)

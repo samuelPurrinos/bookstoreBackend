@@ -1,5 +1,6 @@
 package com.bookstore.controllers;
 
+import org.hamcrest.core.Is;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import com.bookstore.domain.*;
 import com.bookstore.repositories.*;
@@ -12,6 +13,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.*;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.*;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
 import java.util.*;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.ArgumentMatchers.any;
@@ -26,7 +29,7 @@ public class IssueControllerTest {
     @MockBean
     private SaveBooksService saveBooksService;
     @MockBean
-    private IssuesService issuesService;
+    private IssueService issueService;
     @MockBean
     private IssueRepository issueRepository;
     @Autowired
@@ -82,10 +85,32 @@ public class IssueControllerTest {
     }
 
     @Test
+    public void postInvalidIssue() throws Exception {
+        //given
+        Issue invalidIssue = new Issue();
+
+        //when
+        MockHttpServletResponse response = mvc.perform(
+                        post("/issues/save").contentType(MediaType.APPLICATION_JSON)
+                                .content(jsonRequestIssue.write(invalidIssue).getJson()))
+                .andReturn().getResponse();
+
+        // then
+        then(response.getStatus()).isEqualTo(400);
+        then(MockMvcResultMatchers.jsonPath("$.isbn", Is.is("isbn is mandatory")));
+        then(MockMvcResultMatchers.jsonPath("$.author", Is.is("Author is mandatory")));
+        then(MockMvcResultMatchers.jsonPath("$.price", Is.is("Price is mandatory")));
+        then(MockMvcResultMatchers.jsonPath("$.price", Is.is("Price must be a positive number")));
+        then(MockMvcResultMatchers.jsonPath("$.releaseDate", Is.is("Release date is mandatory")));
+        then(MockMvcResultMatchers.jsonPath("$.volume", Is.is("Volume is mandatory")));
+        then(MockMvcResultMatchers.jsonPath("$.volume", Is.is("Volume must be a positive number")));
+    }
+
+    @Test
     public void getAllSeries() throws Exception {
 
         //given
-        given(issuesService.findAll())
+        given(issueService.findAll())
                 .willReturn(List.of(record1,record2,record3));
 
         // when
