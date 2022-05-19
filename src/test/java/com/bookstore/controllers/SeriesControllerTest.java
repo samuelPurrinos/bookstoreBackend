@@ -15,8 +15,7 @@ import org.springframework.http.*;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.*;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.util.*;
 import static org.assertj.core.api.BDDAssertions.then;
@@ -24,6 +23,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @AutoConfigureJsonTesters
@@ -93,15 +94,16 @@ public class SeriesControllerTest {
         Serie invalidSerie = new Serie();
 
         //when
-        MockHttpServletResponse response = mvc.perform(
-                        post("/series/save").contentType(MediaType.APPLICATION_JSON)
-                                .content(jsonRequestSerie.write(invalidSerie).getJson()))
-                .andReturn().getResponse();
+        MockHttpServletRequestBuilder mockRequest = post("/series/save")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(jsonRequestSerie.write(invalidSerie).getJson());
 
         // then
-        then(response.getStatus()).isEqualTo(400);
-        then(MockMvcResultMatchers.jsonPath("$.title", Is.is("Title is mandatory")));
-        then(MockMvcResultMatchers.jsonPath("$.publisher", Is.is("Publisher is mandatory")));
+        mvc.perform(mockRequest)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.title", Is.is("Title is mandatory")))
+                .andExpect(jsonPath("$.publisher", Is.is("Publisher is mandatory")));
 
     }
     @Test

@@ -24,7 +24,7 @@ public class Issue {
     private String isbn;
 
     @Column(name = "author", length = 30, nullable = false)
-    @NotBlank(message = "author is mandatory")
+    @NotBlank(message = "Author is mandatory")
     private String author;
 
     @Column(name = "price", precision = 10, nullable = false)

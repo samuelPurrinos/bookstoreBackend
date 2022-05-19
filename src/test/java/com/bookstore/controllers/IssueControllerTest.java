@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.*;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.*;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.*;
@@ -21,6 +22,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @WebMvcTest(IssueController.class)
 @AutoConfigureJsonTesters
@@ -90,20 +93,19 @@ public class IssueControllerTest {
         Issue invalidIssue = new Issue();
 
         //when
-        MockHttpServletResponse response = mvc.perform(
-                        post("/issues/save").contentType(MediaType.APPLICATION_JSON)
-                                .content(jsonRequestIssue.write(invalidIssue).getJson()))
-                .andReturn().getResponse();
+        MockHttpServletRequestBuilder mockRequest = post("/issues/save")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(jsonRequestIssue.write(invalidIssue).getJson());
 
         // then
-        then(response.getStatus()).isEqualTo(400);
-        then(MockMvcResultMatchers.jsonPath("$.isbn", Is.is("isbn is mandatory")));
-        then(MockMvcResultMatchers.jsonPath("$.author", Is.is("Author is mandatory")));
-        then(MockMvcResultMatchers.jsonPath("$.price", Is.is("Price is mandatory")));
-        then(MockMvcResultMatchers.jsonPath("$.price", Is.is("Price must be a positive number")));
-        then(MockMvcResultMatchers.jsonPath("$.releaseDate", Is.is("Release date is mandatory")));
-        then(MockMvcResultMatchers.jsonPath("$.volume", Is.is("Volume is mandatory")));
-        then(MockMvcResultMatchers.jsonPath("$.volume", Is.is("Volume must be a positive number")));
+        mvc.perform(mockRequest)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.isbn", Is.is("isbn is mandatory")))
+                .andExpect(jsonPath("$.author", Is.is("Author is mandatory")))
+                .andExpect(jsonPath("$.price", Is.is("Price is mandatory")))
+                .andExpect(jsonPath("$.releaseDate", Is.is("Release date is mandatory")))
+                .andExpect(jsonPath("$.volume", Is.is("Volume is mandatory")));
     }
 
     @Test
