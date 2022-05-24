@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +33,11 @@ public class SeriesController {
     @GetMapping
     public ResponseEntity<List<Serie>> getSeries(){
         return ResponseEntity.ok(serieService.findAll());
+    }
+
+    @GetMapping(value = "/{serieId}")
+    public ResponseEntity<Optional<Serie>> getSerieById(@PathVariable Long serieId) {
+        return ResponseEntity.ok(serieService.findSerieById(serieId));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

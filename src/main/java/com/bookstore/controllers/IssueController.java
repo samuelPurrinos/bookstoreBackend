@@ -1,19 +1,15 @@
 package com.bookstore.controllers;
 
 import com.bookstore.domain.Issue;
-import com.bookstore.services.IssueService;
-import com.bookstore.services.SaveBooksService;
+import com.bookstore.services.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +28,11 @@ public class IssueController {
     @GetMapping
     public ResponseEntity<List<Issue>> getIssues() {
         return ResponseEntity.ok(issueService.findAll());
+    }
+
+    @GetMapping(value ="{issueId}")
+    public ResponseEntity<Optional<Issue>> getIssueById(@PathVariable Long issueId){
+        return ResponseEntity.ok(issueService.findIssueById(issueId));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

@@ -66,6 +66,31 @@ public class IssueControllerTest {
     }
 
     @Test
+    public void getIssueById_issueNotFound() throws Exception {
+        //given
+        given(issueService.findIssueById(any())).willReturn(Optional.empty());
+
+        //when
+        MockHttpServletResponse response = mvc.perform(get("/issues/2")).andReturn().getResponse();
+
+        //then
+        then(response.getStatus()).isEqualTo(200);
+        then(response.getContentAsString()).isEqualTo("null");
+
+    }
+    @Test
+    public void getIssueById_success() throws Exception {
+        //given
+        given(issueService.findIssueById(any())).willReturn(Optional.of(record1));
+
+        //when
+        MockHttpServletResponse response = mvc.perform(get("/issues/1")).andReturn().getResponse();
+
+        //then
+        then(response.getStatus()).isEqualTo(200);
+        then(response.getContentAsString()).isEqualTo(jsonResultIssue.write(record1).getJson());
+    }
+    @Test
     public void postValidIssue() throws Exception {
 
         given(saveBooksService.

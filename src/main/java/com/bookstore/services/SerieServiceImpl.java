@@ -14,7 +14,7 @@ public class SerieServiceImpl implements SerieService {
     private final SerieRepository serieRepository;
     @Override
     public Optional<Serie> findSerieById(Long id) {
-        return Optional.empty();
+        return serieRepository.findById(id);
     }
 
     @Override

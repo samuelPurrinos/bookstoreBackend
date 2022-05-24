@@ -14,9 +14,7 @@ public class IssueServiceImpl implements IssueService {
     private final IssueRepository issueRepository;
 
     @Override
-    public Optional<Issue> findIssueById(Long id) {
-        return Optional.empty();
-    }
+    public Optional<Issue> findIssueById(Long id) {return issueRepository.findById(id);}
 
     @Override
     public List<Issue> findAll() {

@@ -68,6 +68,31 @@ public class SeriesControllerTest {
     }
 
     @Test
+    public void getSerieById_success() throws Exception {
+        //given
+        given(serieService.findSerieById(any())).willReturn(Optional.of(record1));
+
+        //when
+        MockHttpServletResponse response = mvc.perform(get("/series/1")).andReturn().getResponse();
+
+        //then
+        then(response.getStatus()).isEqualTo(200);
+        then(response.getContentAsString()).isEqualTo(jsonResultSerie.write(record1).getJson());
+    }
+
+    @Test
+    public void getSerieById_serieNotFound() throws Exception {
+        //given
+        given(serieService.findSerieById(any())).willReturn(Optional.empty());
+
+        //when
+        MockHttpServletResponse response = mvc.perform(get("/series/2")).andReturn().getResponse();
+
+        //then
+        then(response.getStatus()).isEqualTo(200);
+        then(response.getContentAsString()).isEqualTo("null");
+    }
+    @Test
     public void postValidSerie() throws Exception {
         //given
         given(saveBooksService.
