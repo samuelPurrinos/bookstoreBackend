@@ -28,6 +28,10 @@ public class IssueServiceImpl implements IssueService {
 
     @Override
     public boolean deleteIssue(Long id) {
+        if(issueRepository.existsById(id)){
+            issueRepository.deleteById(id);
+            return true;
+        }
         return false;
     }
 }

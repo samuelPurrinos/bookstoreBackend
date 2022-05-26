@@ -40,6 +40,15 @@ public class SeriesController {
         return ResponseEntity.ok(serieService.findSerieById(serieId));
     }
 
+    @DeleteMapping(value ="{serieId}")
+    public ResponseEntity<Long> deleteSerie(@PathVariable Long serieId){
+        boolean isRemoved =serieService.deleteSerie(serieId);
+        if(isRemoved){
+            return new ResponseEntity<>(serieId,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(

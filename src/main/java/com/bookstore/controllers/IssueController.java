@@ -35,6 +35,15 @@ public class IssueController {
         return ResponseEntity.ok(issueService.findIssueById(issueId));
     }
 
+    @DeleteMapping(value ="{issueId}")
+    public ResponseEntity<Long> deleteIssue(@PathVariable Long issueId){
+        boolean isRemoved =issueService.deleteIssue(issueId);
+        if(isRemoved){
+            return new ResponseEntity<>(issueId,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(

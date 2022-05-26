@@ -29,6 +29,10 @@ public class SerieServiceImpl implements SerieService {
 
     @Override
     public boolean deleteSerie(Long id) {
+        if(serieRepository.existsById(id)){
+            serieRepository.deleteById(id);
+            return true;
+        }
         return false;
     }
 }

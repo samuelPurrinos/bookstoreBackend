@@ -21,8 +21,7 @@ import java.util.*;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -91,6 +90,30 @@ public class SeriesControllerTest {
         //then
         then(response.getStatus()).isEqualTo(200);
         then(response.getContentAsString()).isEqualTo("null");
+    }
+
+    @Test
+    public void deleteSerie_success() throws Exception {
+        //given
+        given(serieService.deleteSerie(any())).willReturn(true);
+
+        //when
+        MockHttpServletResponse response = mvc.perform(delete("/series/1")).andReturn().getResponse();
+
+        //then
+        then(response.getStatus()).isEqualTo(200);
+    }
+
+    @Test
+    public void deleteSerie_notFound() throws Exception {
+        //given
+        given(serieService.deleteSerie(any())).willReturn(false);
+
+        //when
+        MockHttpServletResponse response = mvc.perform(delete("/series/1")).andReturn().getResponse();
+
+        //then
+        then(response.getStatus()).isEqualTo(404);
     }
     @Test
     public void postValidSerie() throws Exception {

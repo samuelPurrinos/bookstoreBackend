@@ -20,8 +20,8 @@ import java.util.*;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -90,6 +90,31 @@ public class IssueControllerTest {
         then(response.getStatus()).isEqualTo(200);
         then(response.getContentAsString()).isEqualTo(jsonResultIssue.write(record1).getJson());
     }
+
+    @Test
+    public void deleteIssue_success() throws Exception {
+        //given
+        given(issueService.deleteIssue(any())).willReturn(true);
+
+        //when
+        MockHttpServletResponse response = mvc.perform(delete("/issues/1")).andReturn().getResponse();
+
+        //then
+        then(response.getStatus()).isEqualTo(200);
+    }
+
+    @Test
+    public void deleteIssue_notFound() throws Exception {
+        //given
+        given(issueService.deleteIssue(any())).willReturn(false);
+
+        //when
+        MockHttpServletResponse response = mvc.perform(delete("/issues/1")).andReturn().getResponse();
+
+        //then
+        then(response.getStatus()).isEqualTo(404);
+    }
+
     @Test
     public void postValidIssue() throws Exception {
 
